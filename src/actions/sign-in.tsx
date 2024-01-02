@@ -10,5 +10,5 @@ export type SignInResponse = {
 export const signIn = async (data: SignInPayload): Promise<SignInResponse> => {
   console.log("data:", data)
 
-  return { message: "email sent", type: "success" }
+  return { message: "Email sent", type: "success" }
 }
