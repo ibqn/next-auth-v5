@@ -19,3 +19,5 @@ export const signUpValidator = z
   })
 
 export type SignUpPayload = z.infer<typeof signUpValidator>
+
+export type StrippedSignUpPayload = Omit<SignUpPayload, "confirmPassword">

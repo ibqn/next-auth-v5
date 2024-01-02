@@ -1,14 +1,21 @@
 "use server"
 
-import { type SignUpPayload } from "@/lib/validators"
+import bcrypt from "bcrypt"
+import { StrippedSignUpPayload } from "@/lib/validators"
 
 export type SignUpResponse = {
   message: string
   type: "success" | "error"
 }
 
-export const signUp = async (data: SignUpPayload): Promise<SignUpResponse> => {
+export const signUp = async (
+  data: StrippedSignUpPayload
+): Promise<SignUpResponse> => {
   console.log("data:", data)
 
-  return { message: "Email sent", type: "success" }
+  const { email, password, name } = data
+
+  const hashedPassword = await bcrypt.hash(password, 10)
+
+  return { message: "signed up", type: "success" }
 }
