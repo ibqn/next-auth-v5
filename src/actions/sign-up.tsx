@@ -1,7 +1,9 @@
 "use server"
 
 import bcrypt from "bcrypt"
+import { prisma } from "@/lib/prisma"
 import { StrippedSignUpPayload } from "@/lib/validators"
+import { getUserByEmail } from "@/utils/prisma"
 
 export type SignUpResponse = {
   message: string
@@ -17,5 +19,13 @@ export const signUp = async (
 
   const hashedPassword = await bcrypt.hash(password, 10)
 
-  return { message: "signed up", type: "success" }
+  const existingUser = await getUserByEmail(email)
+
+  if (existingUser) {
+    return { type: "error", message: "Email Already in use" }
+  }
+
+  await prisma.user.create({ data: { name, email, password: hashedPassword } })
+
+  return { message: "Account created", type: "success" }
 }
