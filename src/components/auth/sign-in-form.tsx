@@ -14,8 +14,8 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "../ui/button"
-import { signIn } from "@/actions/sign-in"
-import { useTransition } from "react"
+import { SignInResponse, signIn } from "@/actions/sign-in"
+import { useState } from "react"
 import { FormError } from "./form-error"
 import { FormSuccess } from "./form-success"
 
@@ -26,11 +26,16 @@ export const SignInForm = (props: Props) => {
     resolver: zodResolver(signInValidator),
   })
 
-  const [isPending, startTransaction] = useTransition()
+  const [isDisabled, setDisabled] = useState(false)
+  const [response, setResponse] = useState<SignInResponse | null>(null)
 
-  const handleSubmit = form.handleSubmit((data) =>
-    startTransaction(() => signIn(data))
-  )
+  const handleSubmit = form.handleSubmit(async (data) => {
+    setDisabled(true)
+    setResponse(null)
+    const response = await signIn(data)
+    setResponse(response)
+    setDisabled(false)
+  })
 
   return (
     <CardWrapper
@@ -53,7 +58,7 @@ export const SignInForm = (props: Props) => {
                       {...field}
                       type="email"
                       placeholder="Email"
-                      disabled={isPending}
+                      disabled={isDisabled}
                     />
                   </FormControl>
                   <FormMessage />
@@ -72,7 +77,7 @@ export const SignInForm = (props: Props) => {
                       {...field}
                       type="password"
                       placeholder="******"
-                      disabled={isPending}
+                      disabled={isDisabled}
                     />
                   </FormControl>
                   <FormMessage />
@@ -81,10 +86,15 @@ export const SignInForm = (props: Props) => {
             />
           </div>
 
-          <FormError message="" />
-          <FormSuccess message="" />
+          {response?.type === "success" && (
+            <FormSuccess message={response.message} />
+          )}
 
-          <Button type="submit" className="w-full" disabled={isPending}>
+          {response?.type === "error" && (
+            <FormError message={response.message} />
+          )}
+
+          <Button type="submit" className="w-full" disabled={isDisabled}>
             Sign In
           </Button>
         </form>
