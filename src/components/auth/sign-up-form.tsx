@@ -2,11 +2,7 @@
 
 import { useForm } from "react-hook-form"
 import { CardWrapper } from "./card-wrapper"
-import {
-  type SignUpPayload,
-  signUpValidator,
-  StrippedSignUpPayload,
-} from "@/lib/validators"
+import { type SignUpPayload, signUpValidator } from "@/lib/validators"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
   Form,
@@ -34,10 +30,7 @@ export const SignUpForm = (props: Props) => {
   const [response, setResponse] = useState<SignUpResponse | null>(null)
 
   const handleSubmit = form.handleSubmit(async (data) => {
-    const strippedData = {
-      ...data,
-      confirmPassword: undefined,
-    } as StrippedSignUpPayload
+    const { confirmPassword, ...strippedData } = data
 
     setDisabled(true)
     setResponse(null)
