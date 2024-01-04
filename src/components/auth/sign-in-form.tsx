@@ -18,10 +18,17 @@ import { SignInResponse, signIn } from "@/actions/sign-in"
 import { useState } from "react"
 import { FormError } from "./form-error"
 import { FormSuccess } from "./form-success"
+import { useSearchParams } from "next/navigation"
 
 type Props = {}
 
 export const SignInForm = (props: Props) => {
+  const searchParams = useSearchParams()
+  const urlError =
+    searchParams.get("error") === "OAuthAccountNotLinked"
+      ? "Email already in use with different provider"
+      : undefined
+
   const form = useForm<SignInPayload>({
     resolver: zodResolver(signInValidator),
   })
@@ -90,8 +97,8 @@ export const SignInForm = (props: Props) => {
             <FormSuccess message={response.message} />
           )}
 
-          {response?.type === "error" && (
-            <FormError message={response.message} />
+          {(response?.type === "error" || urlError) && (
+            <FormError message={response?.message || urlError} />
           )}
 
           <Button type="submit" className="w-full" disabled={isDisabled}>

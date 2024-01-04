@@ -4,6 +4,8 @@ import bcrypt from "bcrypt"
 import { prisma } from "@/lib/prisma"
 import { StrippedSignUpPayload } from "@/lib/validators"
 import { getUserByEmail } from "@/utils/prisma"
+import { generateVerificationToken } from "@/lib/tokens"
+import { sendVerificationEmail } from "@/lib/email"
 
 export type SignUpResponse = {
   message: string
@@ -27,5 +29,8 @@ export const signUp = async (
 
   await prisma.user.create({ data: { name, email, password: hashedPassword } })
 
-  return { message: "Account created", type: "success" }
+  const verificationToken = await generateVerificationToken(email)
+  await sendVerificationEmail(email, verificationToken.token)
+
+  return { message: "Confirmation Email sent", type: "success" }
 }

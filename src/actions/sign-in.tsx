@@ -4,6 +4,8 @@ import { signInValidator, type SignInPayload } from "@/lib/validators"
 import { signIn as authSignIn } from "@/auth"
 import { DEFAULT_SIGN_IN_REDIRECT } from "@/routes"
 import { AuthError } from "next-auth"
+import { getUserByEmail } from "@/utils/prisma"
+import { generateVerificationToken } from "@/lib/tokens"
 
 export type SignInResponse = {
   message: string
@@ -21,6 +23,20 @@ export const signIn = async (data: SignInPayload): Promise<SignInResponse> => {
 
   const { email, password } = validatedFields.data
 
+  const existingUser = await getUserByEmail(email)
+
+  if (!existingUser?.email || !existingUser?.password) {
+    return { message: "Sign in failed", type: "error" }
+  }
+
+  if (!existingUser?.emailVerified) {
+    const verificationToken = await generateVerificationToken(
+      existingUser.email
+    )
+
+    return { message: "Email verification sent", type: "success" }
+  }
+
   try {
     await authSignIn("credentials", {
       email,
@@ -36,5 +52,5 @@ export const signIn = async (data: SignInPayload): Promise<SignInResponse> => {
     throw error
   }
 
-  return { message: "Email sent", type: "success" }
+  return { message: "Email verification sent", type: "success" }
 }
