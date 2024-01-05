@@ -6,6 +6,7 @@ import { DEFAULT_SIGN_IN_REDIRECT } from "@/routes"
 import { AuthError } from "next-auth"
 import { getUserByEmail } from "@/utils/prisma"
 import { generateVerificationToken } from "@/lib/tokens"
+import { sendVerificationEmail } from "@/lib/email"
 
 export type SignInResponse = {
   message: string
@@ -33,6 +34,8 @@ export const signIn = async (data: SignInPayload): Promise<SignInResponse> => {
     const verificationToken = await generateVerificationToken(
       existingUser.email
     )
+
+    await sendVerificationEmail(existingUser.email, verificationToken.token)
 
     return { message: "Email verification sent", type: "success" }
   }
