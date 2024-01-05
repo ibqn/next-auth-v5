@@ -2,16 +2,42 @@
 
 import { useSearchParams } from "next/navigation"
 import { CardWrapper } from "./card-wrapper"
-import { useCallback, useEffect } from "react"
+import { useCallback, useEffect, useState } from "react"
+import {
+  type EmailVerificationResponse,
+  emailVerification,
+} from "@/actions/email-verification"
+import { CircleLoader } from "./circle-loader"
+import { FormError } from "./form-error"
+import { FormSuccess } from "./form-success"
 
 type Props = {}
 
 export const EmailVerificationForm = (props: Props) => {
+  const [response, setResponse] = useState<EmailVerificationResponse | null>(
+    null
+  )
+
   const searchParams = useSearchParams()
 
   const token = searchParams.get("token")
 
-  const onSubmit = useCallback(() => {}, [token])
+  const onSubmit = useCallback(async () => {
+    if (response) {
+      return
+    }
+
+    if (!token) {
+      setResponse({
+        message: "No Verification token present",
+        type: "error",
+      })
+      return
+    }
+
+    const verificationResponse = await emailVerification(token)
+    setResponse(verificationResponse)
+  }, [token, response])
 
   useEffect(() => {
     onSubmit()
@@ -20,31 +46,15 @@ export const EmailVerificationForm = (props: Props) => {
   return (
     <CardWrapper
       headerLabel="Confirm your email address"
-      backButtonLabel="Back to sign in?"
+      backButtonLabel="Back to sign in"
       backButtonHref="/auth/sign-in"
     >
       <div className="flex w-full items-center justify-center">
-        <svg
-          className="-ml-1 mr-3 h-5 w-5 animate-spin"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-          ></circle>
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-          ></path>
-        </svg>
-        <span className="text-sm">Processing...</span>
+        {!response && <CircleLoader />}
+        {response?.type === "error" && <FormError message={response.message} />}
+        {response?.type === "success" && (
+          <FormSuccess message={response.message} />
+        )}
       </div>
     </CardWrapper>
   )

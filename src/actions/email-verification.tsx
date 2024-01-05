@@ -4,14 +4,14 @@ import { prisma } from "@/lib/prisma"
 import { getUserByEmail, getVerificationTokenByToken } from "@/utils/prisma"
 import { compareDesc } from "date-fns"
 
-export type SignUpResponse = {
+export type EmailVerificationResponse = {
   message: string
   type: "success" | "error"
 }
 
 export const emailVerification = async (
   token: string
-): Promise<SignUpResponse> => {
+): Promise<EmailVerificationResponse> => {
   console.log("data:", token)
 
   const existingVerificationToken = await getVerificationTokenByToken(token)
@@ -33,14 +33,21 @@ export const emailVerification = async (
     return { type: "error", message: "Verification token has expired" }
   }
 
+  if (existingUser.emailVerified) {
+    return {
+      message: "Email address successfully confirmed",
+      type: "success",
+    }
+  }
+
   await prisma.user.update({
     where: { id: existingUser.id },
     data: { emailVerified: new Date(), email: existingVerificationToken.email },
   })
 
-  await prisma.verificationToken.delete({
-    where: { id: existingVerificationToken.id },
-  })
+  // await prisma.verificationToken.delete({
+  //   where: { id: existingVerificationToken.id },
+  // })
 
   return { message: "Email address successfully confirmed", type: "success" }
 }
