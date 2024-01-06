@@ -1,5 +1,7 @@
 "use server"
 
+import { sendPasswordResetEmail } from "@/lib/email"
+import { generatePasswordResetToken } from "@/lib/tokens"
 import { passwordResetValidator, PasswordResetPayload } from "@/lib/validators"
 import { getUserByEmail } from "@/utils/prisma"
 
@@ -26,6 +28,12 @@ export const passwordReset = async (
   if (!existingUser) {
     return { message: "Password Reset failed", type: "error" }
   }
+
+  const passwordResetToken = await generatePasswordResetToken(email)
+  await sendPasswordResetEmail(
+    passwordResetToken.email,
+    passwordResetToken.token
+  )
 
   return { message: "Email verification sent", type: "success" }
 }

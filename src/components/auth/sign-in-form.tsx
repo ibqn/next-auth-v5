@@ -19,6 +19,7 @@ import { useState } from "react"
 import { FormError } from "./form-error"
 import { FormSuccess } from "./form-success"
 import { useSearchParams } from "next/navigation"
+import Link from "next/link"
 
 type Props = {}
 
@@ -106,6 +107,10 @@ export const SignInForm = (props: Props) => {
           </Button>
         </form>
       </Form>
+
+      <Button size="sm" variant="link" asChild className="px-0 font-normal">
+        <Link href="/auth/password-reset">Forgot password?</Link>
+      </Button>
     </CardWrapper>
   )
 }
