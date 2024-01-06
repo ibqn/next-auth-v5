@@ -4,3 +4,7 @@ export {
   type StrippedSignUpPayload,
   signUpValidator,
 } from "./sign-up"
+export {
+  type PasswordResetPayload,
+  passwordResetValidator,
+} from "./password-reset"

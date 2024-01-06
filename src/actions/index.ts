@@ -4,3 +4,5 @@ export {
   type EmailVerificationResponse,
   emailVerification,
 } from "./email-verification"
+
+export { type PasswordResetResponse, passwordReset } from "./password-reset"
