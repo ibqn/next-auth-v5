@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Button } from "../ui/button"
+import { Button } from "@/components/ui/button"
 import { SignUpResponse, signUp } from "@/actions"
 import { useState } from "react"
 import { FormError } from "./form-error"
