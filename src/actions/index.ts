@@ -6,3 +6,4 @@ export {
 } from "./email-verification"
 
 export { type PasswordResetResponse, passwordReset } from "./password-reset"
+export { type PasswordUpdateResponse, updatePassword } from "./password-update"

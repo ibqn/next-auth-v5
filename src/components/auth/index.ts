@@ -5,3 +5,4 @@ export { ErrorCard } from "./error-card"
 
 export { EmailVerificationForm } from "./email-verification-from"
 export { PasswordResetForm } from "./password-reset-form"
+export { NewPasswordForm } from "./new-password-form"

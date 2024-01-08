@@ -8,3 +8,8 @@ export {
   type PasswordResetPayload,
   passwordResetValidator,
 } from "./password-reset"
+export {
+  type NewPasswordPayload,
+  type StrippedNewPasswordPayload,
+  newPasswordValidator,
+} from "./new-password"

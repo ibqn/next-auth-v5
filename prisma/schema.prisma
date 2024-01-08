@@ -73,10 +73,11 @@ model VerificationToken {
 }
 
 model PasswordResetToken {
-  id      String   @id @default(cuid())
+  id      String    @id @default(cuid())
   email   String
-  token   String   @unique
+  token   String    @unique
   expires DateTime
+  deleted DateTime?
 
   @@unique([email, token])
   @@map("passwordresettokens")

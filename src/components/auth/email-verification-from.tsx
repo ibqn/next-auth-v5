@@ -3,10 +3,7 @@
 import { useSearchParams } from "next/navigation"
 import { CardWrapper } from "./card-wrapper"
 import { useCallback, useEffect, useState } from "react"
-import {
-  type EmailVerificationResponse,
-  emailVerification,
-} from "@/actions/email-verification"
+import { type EmailVerificationResponse, emailVerification } from "@/actions"
 import { CircleLoader } from "./circle-loader"
 import { FormError } from "./form-error"
 import { FormSuccess } from "./form-success"
@@ -24,14 +21,6 @@ export const EmailVerificationForm = (props: Props) => {
 
   const onSubmit = useCallback(async () => {
     if (response) {
-      return
-    }
-
-    if (!token) {
-      setResponse({
-        message: "No Verification token present",
-        type: "error",
-      })
       return
     }
 

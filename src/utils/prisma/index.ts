@@ -3,3 +3,7 @@ export {
   getVerificationTokenByEmail,
   getVerificationTokenByToken,
 } from "./verification-token"
+export {
+  getPasswordResetTokenByEmail,
+  getPasswordResetTokenByToken,
+} from "./password-reset-token"

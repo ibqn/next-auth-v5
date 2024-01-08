@@ -10,9 +10,13 @@ export type EmailVerificationResponse = {
 }
 
 export const emailVerification = async (
-  token: string
+  token: string | null
 ): Promise<EmailVerificationResponse> => {
   console.log("data:", token)
+
+  if (!token) {
+    return { message: "No Verification token present", type: "error" }
+  }
 
   const existingVerificationToken = await getVerificationTokenByToken(token)
 
