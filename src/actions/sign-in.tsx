@@ -8,10 +8,12 @@ import { getUserByEmail } from "@/utils/prisma"
 import { generateVerificationToken } from "@/lib/tokens"
 import { sendVerificationEmail } from "@/lib/email"
 
-export type SignInResponse = {
-  message: string
-  type: "success" | "error"
-}
+export type SignInResponse =
+  | {
+      message: string
+      type: "success" | "error"
+    }
+  | { twoFactor: boolean }
 
 export const signIn = async (data: SignInPayload): Promise<SignInResponse> => {
   console.log("data:", data)
@@ -22,7 +24,7 @@ export const signIn = async (data: SignInPayload): Promise<SignInResponse> => {
     return { message: "Sign in failed", type: "error" }
   }
 
-  const { email, password } = validatedFields.data
+  const { email, password, code } = validatedFields.data
 
   const existingUser = await getUserByEmail(email)
 
@@ -40,6 +42,12 @@ export const signIn = async (data: SignInPayload): Promise<SignInResponse> => {
     return { message: "Email verification sent", type: "success" }
   }
 
+  if (existingUser.isTwoFactorEnabled) {
+    if (code === undefined) {
+      return { twoFactor: true }
+    }
+  }
+
   try {
     await authSignIn("credentials", {
       email,
@@ -47,13 +55,11 @@ export const signIn = async (data: SignInPayload): Promise<SignInResponse> => {
       redirectTo: DEFAULT_SIGN_IN_REDIRECT,
     })
   } catch (error) {
-    console.error(error)
     if (error instanceof AuthError) {
       return { message: "Sign in failed", type: "error" }
     }
 
     throw error
   }
-
   return { message: "Email verification sent", type: "success" }
 }
