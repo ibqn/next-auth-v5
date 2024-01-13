@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { SignInResponse, signIn } from "@/actions"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { FormError } from "./form-error"
 import { FormSuccess } from "./form-success"
 import { useSearchParams } from "next/navigation"
@@ -32,6 +32,11 @@ export const SignInForm = (props: Props) => {
 
   const form = useForm<SignInPayload>({
     resolver: zodResolver(signInValidator),
+    defaultValues: {
+      email: "",
+      password: "",
+      code: "",
+    },
   })
 
   const [isDisabled, setDisabled] = useState(false)
@@ -45,6 +50,21 @@ export const SignInForm = (props: Props) => {
     setDisabled(false)
   })
 
+  const responseType = useMemo(
+    () => (response && "type" in response ? response.type : undefined),
+    [response]
+  )
+
+  const responseMessage = useMemo(
+    () => (response && "message" in response ? response.message : undefined),
+    [response]
+  )
+
+  const isTwoFactor = useMemo(
+    () => (response && "twoFactor" in response ? response.twoFactor : false),
+    [response]
+  )
+
   return (
     <CardWrapper
       headerLabel="Welcome back"
@@ -55,55 +75,79 @@ export const SignInForm = (props: Props) => {
       <Form {...form}>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="email"
-                      placeholder="Email"
-                      disabled={isDisabled}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {isTwoFactor ? (
+              <FormField
+                control={form.control}
+                name="code"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Two Factor Code</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Two Factor Code"
+                        disabled={isDisabled}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ) : (
+              <>
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="email"
+                          autoComplete="username"
+                          placeholder="Email"
+                          disabled={isDisabled}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="password"
-                      placeholder="******"
-                      disabled={isDisabled}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="password"
+                          autoComplete="current-password"
+                          placeholder="******"
+                          disabled={isDisabled}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
           </div>
 
-          {response?.type === "success" && (
-            <FormSuccess message={response.message} />
+          {responseType === "success" && (
+            <FormSuccess message={responseMessage} />
           )}
 
-          {(response?.type === "error" || urlError) && (
-            <FormError message={response?.message || urlError} />
+          {(responseType === "error" || urlError) && (
+            <FormError message={responseMessage || urlError} />
           )}
 
           <Button type="submit" className="w-full" disabled={isDisabled}>
-            Sign In
+            {isTwoFactor ? "Confirm" : "Sign In"}
           </Button>
         </form>
       </Form>
