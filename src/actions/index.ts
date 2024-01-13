@@ -1,5 +1,6 @@
 export { type SignInResponse, signIn } from "./sign-in"
 export { type SignUpResponse, signUp } from "./sign-up"
+export { signOut } from "./sign-out"
 export {
   type EmailVerificationResponse,
   emailVerification,
