@@ -13,3 +13,4 @@ export {
   type StrippedNewPasswordPayload,
   newPasswordValidator,
 } from "./new-password"
+export { type SettingsPayload, settingsValidator } from "./settings"
