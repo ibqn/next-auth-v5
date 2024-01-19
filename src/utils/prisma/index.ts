@@ -8,3 +8,4 @@ export {
   getPasswordResetTokenByToken,
 } from "./password-reset-token"
 export { getTwoFactorConfirmationByUserId } from "./two-factor-confirmation"
+export { getAccountByUserId } from "./account"
