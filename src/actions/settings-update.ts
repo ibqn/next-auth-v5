@@ -1,7 +1,7 @@
 "use server"
 
 import { SettingsPayload } from "@/lib/validators"
-import { currentUser } from "@/utils/auth"
+import { getCurrentUser } from "@/utils/auth"
 import { getUserById } from "@/utils/prisma"
 import { prisma } from "@/lib/prisma"
 
@@ -13,7 +13,7 @@ export type SettingsUpdateResponse = {
 export const updateSettings = async (
   data: SettingsPayload
 ): Promise<SettingsUpdateResponse> => {
-  const user = await currentUser()
+  const user = await getCurrentUser()
 
   if (!user) {
     return { message: "Unauthorized", type: "error" }
