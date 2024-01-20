@@ -1,5 +1,6 @@
 "use client"
 
+import { adminCall } from "@/actions"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { ShieldCheck } from "lucide-react"
@@ -21,7 +22,16 @@ export const AdminArea = (props: Props) => {
 
     toast("Test call failed")
   }
-  const handleServerAction = () => {}
+  const handleServerAction = async () => {
+    const response = await adminCall()
+
+    if (response.ok) {
+      toast("Test call succeeded")
+      return
+    }
+
+    toast("Test call failed")
+  }
 
   return (
     <Card className="w-[600px]">
