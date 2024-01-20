@@ -3,11 +3,24 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { ShieldCheck } from "lucide-react"
+import { toast } from "sonner"
 
 type Props = {}
 
 export const AdminArea = (props: Props) => {
-  const handleAdmin = () => {}
+  const handleAdmin = async () => {
+    try {
+      const response = await fetch("/api/admin")
+      if (response.ok) {
+        toast("Test call succeeded")
+        return
+      }
+    } catch (error) {
+      console.error(error)
+    }
+
+    toast("Test call failed")
+  }
   const handleServerAction = () => {}
 
   return (
