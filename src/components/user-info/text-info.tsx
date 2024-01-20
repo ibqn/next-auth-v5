@@ -1,5 +1,5 @@
 type Props = {
-  text?: string
+  text?: string | null
 }
 
 export const TextInfo = (props: Props) => {

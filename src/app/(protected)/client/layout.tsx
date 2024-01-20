@@ -7,5 +7,6 @@ type Props = {
 
 export default async function ClientLayout({ children }: Props) {
   const session = await auth()
+
   return <SessionProvider session={session}>{children}</SessionProvider>
 }

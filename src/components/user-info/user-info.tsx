@@ -2,13 +2,64 @@ import { type ExtendedUser } from "@/auth"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { TextInfo } from "./text-info"
 import { BadgeInfo } from "./badge-info"
+import { useMemo } from "react"
 
 type Props = {
   user?: ExtendedUser
   label: string
 }
 
+type CardInfo = {
+  name: string
+} & (
+  | {
+      text?: string | null
+      type: "text"
+    }
+  | {
+      flag?: boolean
+      type: "badge"
+    }
+)
+
 export const UserInfo = ({ user, label }: Props) => {
+  const cardInfoList = useMemo(
+    () =>
+      [
+        {
+          name: "ID",
+          text: user?.id,
+          type: "text",
+        },
+        {
+          name: "Name",
+          text: user?.name,
+          type: "text",
+        },
+        {
+          name: "Email",
+          text: user?.email,
+          type: "text",
+        },
+        {
+          name: "Role",
+          text: user?.role,
+          type: "text",
+        },
+        {
+          name: "Email",
+          text: user?.email,
+          type: "text",
+        },
+        {
+          name: "Email",
+          flag: user?.isTwoFactorEnabled,
+          type: "badge",
+        },
+      ] satisfies CardInfo[],
+    [user]
+  )
+
   return (
     <Card className=" w-[600px] shadow-md">
       <CardHeader>
@@ -16,36 +67,17 @@ export const UserInfo = ({ user, label }: Props) => {
       </CardHeader>
 
       <CardContent className="space-y-4">
-        <div className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-          <p className="text-sm font-medium">ID</p>
-          <TextInfo text={user?.id} />
-        </div>
+        {cardInfoList.map((cardInfo, index) => (
+          <div
+            key={index}
+            className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm"
+          >
+            <p className="text-sm font-medium">{cardInfo.name}</p>
 
-        <div className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-          <p className="text-sm font-medium">Name</p>
-          <p className="max-w-[200px] truncate rounded-md bg-slate-100 p-1 font-mono text-xs">
-            {user?.name}
-          </p>
-        </div>
-
-        <div className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-          <p className="text-sm font-medium">Email</p>
-          <p className="max-w-[200px] truncate rounded-md bg-slate-100 p-1 font-mono text-xs">
-            {user?.email}
-          </p>
-        </div>
-
-        <div className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-          <p className="text-sm font-medium">Role</p>
-          <p className="max-w-[200px] truncate rounded-md bg-slate-100 p-1 font-mono text-xs">
-            {user?.role}
-          </p>
-        </div>
-
-        <div className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-          <p className="text-sm font-medium">Two Factor Authentication</p>
-          <BadgeInfo flag={user?.isTwoFactorEnabled} />
-        </div>
+            {cardInfo.type === "text" && <TextInfo text={cardInfo.text} />}
+            {cardInfo.type === "badge" && <BadgeInfo flag={cardInfo.flag} />}
+          </div>
+        ))}
       </CardContent>
     </Card>
   )
