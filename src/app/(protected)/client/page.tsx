@@ -1,14 +1,10 @@
-import { auth } from "@/auth"
-import { SignOutButton } from "@/components/auth"
+"use client"
 
-export default async function ClientPage() {
-  const session = await auth()
+import { UserInfo } from "@/components/user-info"
+import { useCurrentUser } from "@/hooks/use-current-user"
 
-  return (
-    <main className="flex flex-col items-center justify-center p-24">
-      client page
-      <div>{JSON.stringify(session)}</div>
-      <SignOutButton>Sign Out</SignOutButton>
-    </main>
-  )
+export default function ClientPage() {
+  const user = useCurrentUser()
+
+  return <UserInfo label="Server Component" user={user} />
 }
