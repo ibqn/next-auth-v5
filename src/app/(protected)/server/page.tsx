@@ -1,14 +1,8 @@
-import { auth } from "@/auth"
-import { SignOutButton } from "@/components/auth"
+import { UserInfo } from "@/components/user-info"
+import { currentUser } from "@/utils/auth"
 
 export default async function ServerPage() {
-  const session = await auth()
+  const user = await currentUser()
 
-  return (
-    <main className="flex flex-col items-center justify-center p-24">
-      Server page
-      <div>{JSON.stringify(session)}</div>
-      <SignOutButton>Sign Out</SignOutButton>
-    </main>
-  )
+  return <UserInfo label="Server Component" user={user} />
 }
