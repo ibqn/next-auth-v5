@@ -52,7 +52,7 @@ export const UserInfo = ({ user, label }: Props) => {
           type: "text",
         },
         {
-          name: "Email",
+          name: "Two Factor Authentication",
           flag: user?.isTwoFactorEnabled,
           type: "badge",
         },
