@@ -42,7 +42,7 @@ export const SettingsForm = (props: Props) => {
     <Card className="w-[600px]">
       <CardHeader>
         <div className="flex flex-row items-center gap-2">
-          <GearIcon className="h-6 w-6" />
+          <GearIcon className="mb-1 h-6 w-6" />
           <p className="text-center text-2xl font-semibold">Settings</p>
         </div>
       </CardHeader>

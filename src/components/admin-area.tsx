@@ -37,7 +37,7 @@ export const AdminArea = (props: Props) => {
     <Card className="w-[600px]">
       <CardHeader>
         <div className="flex flex-row items-center gap-x-2">
-          <ShieldCheck size={30} />
+          <ShieldCheck size={24} className="mb-1" />
           <p className="text-center text-2xl font-semibold">Admin</p>
         </div>
       </CardHeader>
