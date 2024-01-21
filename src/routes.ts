@@ -6,6 +6,13 @@
 export const publicRoutes = ["/", "/auth/email-verification"]
 
 /**
+ * An array of routes that are accessible to the admin
+ * These routes do not require authentication
+ * @type {string[]}
+ */
+export const adminRoutes = ["/admin"]
+
+/**
  * An array of routes that are used for authentication
  * These routes will redirect logged in users to /settings
  * @type {string[]}
