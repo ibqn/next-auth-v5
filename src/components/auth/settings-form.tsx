@@ -19,12 +19,18 @@ import { FormError } from "./form-error"
 import { FormSuccess } from "./form-success"
 import { updateSettings, type SettingsUpdateResponse } from "@/actions"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { type User } from "@prisma/client"
 
-type Props = {}
+type Props = {
+  user: User
+}
 
-export const SettingsForm = (props: Props) => {
+export const SettingsForm = ({ user }: Props) => {
   const form = useForm<SettingsPayload>({
     resolver: zodResolver(settingsValidator),
+    defaultValues: {
+      name: user.name ?? "",
+    },
   })
 
   const [isDisabled, setDisabled] = useState(false)
