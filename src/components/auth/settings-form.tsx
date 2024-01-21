@@ -20,12 +20,16 @@ import { FormSuccess } from "./form-success"
 import { updateSettings, type SettingsUpdateResponse } from "@/actions"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { type User } from "@prisma/client"
+import { useRouter } from "next/navigation"
 
 type Props = {
   user: User
 }
 
 export const SettingsForm = ({ user }: Props) => {
+  const [isDisabled, setDisabled] = useState(false)
+  const [response, setResponse] = useState<SettingsUpdateResponse | null>(null)
+
   const form = useForm<SettingsPayload>({
     resolver: zodResolver(settingsValidator),
     defaultValues: {
@@ -33,15 +37,16 @@ export const SettingsForm = ({ user }: Props) => {
     },
   })
 
-  const [isDisabled, setDisabled] = useState(false)
-  const [response, setResponse] = useState<SettingsUpdateResponse | null>(null)
+  const router = useRouter()
 
   const handleSubmit = form.handleSubmit(async (data) => {
     setDisabled(true)
     setResponse(null)
-    const response = await updateSettings(data)
-    setResponse(response)
+    const updateResponse = await updateSettings(data)
+    setResponse(updateResponse)
     setDisabled(false)
+
+    router.refresh()
   })
 
   return (
