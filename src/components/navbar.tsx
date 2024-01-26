@@ -5,18 +5,22 @@ import { Button } from "@/components/ui/button"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { UserButton } from "@/components/auth"
+import { UserRole } from "@prisma/client"
 
-type Props = {}
+type Props = {
+  role?: UserRole
+}
 
-export const Navbar = (props: Props) => {
+export const Navbar = ({ role }: Props) => {
   const navLinks = useMemo(
-    () => [
-      { path: "/client", name: "Client" },
-      { path: "/server", name: "Server" },
-      { path: "/admin", name: "Admin" },
-      { path: "/settings", name: "Settings" },
-    ],
-    []
+    () =>
+      [
+        { path: "/client", name: "Client" },
+        { path: "/server", name: "Server" },
+        { path: "/admin", name: "Admin", protectedNav: true },
+        { path: "/settings", name: "Settings" },
+      ].filter(({ protectedNav }) => !protectedNav || role === UserRole.ADMIN),
+    [role]
   )
 
   const pathname = usePathname()
