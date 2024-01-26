@@ -19,8 +19,15 @@ import { FormError } from "./form-error"
 import { FormSuccess } from "./form-success"
 import { updateSettings, type SettingsUpdateResponse } from "@/actions"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { type User } from "@prisma/client"
+import { UserRole, type User } from "@prisma/client"
 import { useRouter } from "next/navigation"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 type Props = {
   user: User
@@ -34,6 +41,8 @@ export const SettingsForm = ({ user }: Props) => {
     resolver: zodResolver(settingsValidator),
     defaultValues: {
       name: user.name ?? "",
+      email: user.email ?? "",
+      role: user.role ?? UserRole.USER,
     },
   })
 
@@ -74,6 +83,52 @@ export const SettingsForm = ({ user }: Props) => {
                         placeholder="Name"
                         disabled={isDisabled}
                       />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="email"
+                        placeholder="Email"
+                        disabled={isDisabled}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Role</FormLabel>
+                    <FormControl>
+                      <Select
+                        disabled={isDisabled}
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a role" />
+                        </SelectTrigger>
+
+                        <SelectContent>
+                          <SelectItem value={UserRole.ADMIN}>Admin</SelectItem>
+                          <SelectItem value={UserRole.USER}>User</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
