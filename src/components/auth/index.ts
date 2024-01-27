@@ -9,5 +9,6 @@ export { NewPasswordForm } from "./new-password-form"
 
 export { UserButton } from "./user-button"
 export { SignOutButton } from "./sign-out-button"
+export { SignInButton } from "./sign-in-button"
 
 export { SettingsForm } from "./settings-form"

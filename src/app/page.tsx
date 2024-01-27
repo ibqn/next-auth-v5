@@ -1,6 +1,5 @@
-import { Button } from "@/components/ui/button"
+import { SignInButton } from "@/components/auth"
 import { KeySquare } from "lucide-react"
-import Link from "next/link"
 
 export default function HomePage() {
   return (
@@ -10,11 +9,8 @@ export default function HomePage() {
         <h1 className="text-6xl font-semibold text-white ">Auth</h1>
       </div>
       <p className="text-lg text-white">A simple authentication service</p>
-      <div>
-        <Button asChild variant="secondary" size="lg">
-          <Link href="/auth/sign-in">Sign in</Link>
-        </Button>
-      </div>
+
+      <SignInButton size="lg" />
     </main>
   )
 }
