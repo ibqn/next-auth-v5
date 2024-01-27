@@ -1,7 +1,7 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { GearIcon } from "@radix-ui/react-icons"
+import { GearIcon, Pencil1Icon } from "@radix-ui/react-icons"
 import { settingsValidator, type SettingsPayload } from "@/lib/validators"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
 
 type Props = {
   user: User
@@ -143,6 +144,34 @@ export const SettingsForm = ({ user }: Props) => {
             {response?.type === "error" && (
               <FormError message={response?.message} />
             )}
+
+            <div className="flex flex-row items-center justify-between rounded-lg border px-3 py-0 shadow-sm">
+              <Button
+                type="button"
+                className="gap-x-2 px-2 font-normal"
+                variant="link"
+              >
+                Update Password
+              </Button>
+              <button type="button">
+                <Pencil1Icon />
+              </button>
+            </div>
+
+            <div className="flex flex-row items-center justify-between rounded-lg border px-3 py-0 shadow-sm">
+              <Button
+                className="gap-x-2 px-2 font-normal"
+                type="button"
+                variant="link"
+              >
+                Two Factor Authentication
+              </Button>
+
+              <Switch
+                checked={user.isTwoFactorEnabled ?? false}
+                // onCheckedChange={() => {}}
+              />
+            </div>
 
             <Button type="submit" className="w-full" disabled={isDisabled}>
               Update Settings
