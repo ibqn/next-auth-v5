@@ -15,7 +15,7 @@ export const updateSettings = async (
 ): Promise<SettingsUpdateResponse> => {
   const user = await getCurrentUser()
 
-  if (!user) {
+  if (!user?.id) {
     return { message: "Unauthorized", type: "error" }
   }
 
