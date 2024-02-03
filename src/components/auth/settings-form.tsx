@@ -29,6 +29,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
+import { TwoFactorDialog } from "./two-factor-dialog"
 
 type Props = {
   user: User
@@ -37,6 +38,8 @@ type Props = {
 export const SettingsForm = ({ user }: Props) => {
   const [isDisabled, setDisabled] = useState(false)
   const [response, setResponse] = useState<SettingsUpdateResponse | null>(null)
+
+  const [open, setOpen] = useState<boolean>(false)
 
   const form = useForm<SettingsPayload>({
     resolver: zodResolver(settingsValidator),
@@ -59,126 +62,136 @@ export const SettingsForm = ({ user }: Props) => {
     router.refresh()
   })
 
+  const handleTwoFactorDialog = () => {
+    setOpen(true)
+  }
+
   return (
-    <Card className="w-[600px]">
-      <CardHeader>
-        <div className="flex flex-row items-center gap-2">
-          <GearIcon className="mb-1 h-6 w-6" />
-          <p className="text-center text-2xl font-semibold">Settings</p>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        type="text"
-                        placeholder="Name"
-                        disabled={isDisabled}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+    <>
+      <TwoFactorDialog open={open} setOpen={setOpen} />
+      <Card className="w-[600px]">
+        <CardHeader>
+          <div className="flex flex-row items-center gap-2">
+            <GearIcon className="mb-1 h-6 w-6" />
+            <p className="text-center text-2xl font-semibold">Settings</p>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="text"
+                          placeholder="Name"
+                          disabled={isDisabled}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        type="email"
-                        placeholder="Email"
-                        disabled={isDisabled}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="email"
+                          placeholder="Email"
+                          disabled={isDisabled}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="role"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Role</FormLabel>
-                    <FormControl>
-                      <Select
-                        disabled={isDisabled}
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a role" />
-                        </SelectTrigger>
+                <FormField
+                  control={form.control}
+                  name="role"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Role</FormLabel>
+                      <FormControl>
+                        <Select
+                          disabled={isDisabled}
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a role" />
+                          </SelectTrigger>
 
-                        <SelectContent>
-                          <SelectItem value={UserRole.ADMIN}>Admin</SelectItem>
-                          <SelectItem value={UserRole.USER}>User</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                          <SelectContent>
+                            <SelectItem value={UserRole.ADMIN}>
+                              Admin
+                            </SelectItem>
+                            <SelectItem value={UserRole.USER}>User</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-            {response?.type === "success" && (
-              <FormSuccess message={response.message} />
-            )}
+              {response?.type === "success" && (
+                <FormSuccess message={response.message} />
+              )}
 
-            {response?.type === "error" && (
-              <FormError message={response?.message} />
-            )}
+              {response?.type === "error" && (
+                <FormError message={response?.message} />
+              )}
 
-            <div className="flex flex-row items-center justify-between rounded-lg border px-3 py-0 shadow-sm">
-              <Button
-                type="button"
-                className="gap-x-2 px-2 font-normal"
-                variant="link"
-              >
-                Update Password
+              <div className="flex flex-row items-center justify-between rounded-lg border px-3 py-0 shadow-sm">
+                <Button
+                  type="button"
+                  className="gap-x-2 px-2 font-normal"
+                  variant="link"
+                >
+                  Update Password
+                </Button>
+                <button type="button">
+                  <Pencil1Icon />
+                </button>
+              </div>
+
+              <div className="flex flex-row items-center justify-between rounded-lg border px-3 py-0 shadow-sm">
+                <Button
+                  className="gap-x-2 px-2 font-normal"
+                  type="button"
+                  variant="link"
+                  onClick={handleTwoFactorDialog}
+                >
+                  Two-factor authentication
+                </Button>
+
+                <Switch
+                  checked={user.isTwoFactorEnabled ?? false}
+                  onClick={handleTwoFactorDialog}
+                />
+              </div>
+
+              <Button type="submit" className="w-full" disabled={isDisabled}>
+                Update Settings
               </Button>
-              <button type="button">
-                <Pencil1Icon />
-              </button>
-            </div>
-
-            <div className="flex flex-row items-center justify-between rounded-lg border px-3 py-0 shadow-sm">
-              <Button
-                className="gap-x-2 px-2 font-normal"
-                type="button"
-                variant="link"
-              >
-                Two Factor Authentication
-              </Button>
-
-              <Switch
-                checked={user.isTwoFactorEnabled ?? false}
-                // onCheckedChange={() => {}}
-              />
-            </div>
-
-            <Button type="submit" className="w-full" disabled={isDisabled}>
-              Update Settings
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+    </>
   )
 }
