@@ -14,3 +14,4 @@ export {
   newPasswordValidator,
 } from "./new-password"
 export { type SettingsPayload, settingsValidator } from "./settings"
+export { type TwoFactorPayload, twoFactorValidator } from "./two-factor"
