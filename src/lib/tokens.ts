@@ -1,8 +1,10 @@
 import { addHours } from "date-fns"
 import { randomUUID } from "crypto"
-import { getVerificationTokenByEmail } from "@/utils/prisma/verification-token"
+import {
+  getVerificationTokenByEmail,
+  getPasswordResetTokenByEmail,
+} from "@/utils/prisma"
 import { prisma } from "@/lib/prisma"
-import { getPasswordResetTokenByEmail } from "@/utils/prisma/password-reset-token"
 
 export const generateVerificationToken = async (email: string) => {
   const token = randomUUID()
