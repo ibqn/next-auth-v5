@@ -13,3 +13,7 @@ export {
   type TwoFactorSecretResponse,
   getTwoFactorSecret,
 } from "./two-factor-secret"
+export {
+  updateTwoFactor,
+  type TwoFactorUpdateResponse,
+} from "./two-factor-update"

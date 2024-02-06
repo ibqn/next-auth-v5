@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -16,19 +18,31 @@ import { useForm } from "react-hook-form"
 import { QRCodeSVG } from "qrcode.react"
 import { Input } from "@/components/ui/input"
 import { getTwoFactorSecret } from "@/actions"
+import {
+  type TwoFactorUpdateResponse,
+  updateTwoFactor,
+} from "@/actions/two-factor-update"
+import { FormSuccess } from "./form-success"
+import { FormError } from "./form-error"
+import { useRouter } from "next/navigation"
 
-type Props = {}
+type Props = {
+  isTwoFactorEnabled: boolean
+}
 
 export const TwoFactorForm = (props: Props) => {
   const form = useForm<TwoFactorPayload>({
     resolver: zodResolver(twoFactorValidator),
     defaultValues: {
       code: "",
-      isTwoFactorEnabled: false,
+      isTwoFactorEnabled: props.isTwoFactorEnabled,
     },
   })
 
+  const router = useRouter()
+
   const [isDisabled, setDisabled] = useState(false)
+  const [response, setResponse] = useState<TwoFactorUpdateResponse | null>(null)
   const isTwoFactorEnabled = form.watch("isTwoFactorEnabled")
 
   const [otpauth, setOtpauth] = useState<string | null>(null)
@@ -52,6 +66,9 @@ export const TwoFactorForm = (props: Props) => {
   const handleSubmit = form.handleSubmit(async (data) => {
     setDisabled(true)
     console.log(data)
+    const response = await updateTwoFactor(data)
+    router.refresh()
+    setResponse(response)
     setDisabled(false)
   })
 
@@ -109,6 +126,12 @@ export const TwoFactorForm = (props: Props) => {
             />
           </>
         )}
+
+        {response?.type === "success" && (
+          <FormSuccess message={response.message} />
+        )}
+
+        {response?.type === "error" && <FormError message={response.message} />}
 
         <Button type="submit">Save changes</Button>
       </form>

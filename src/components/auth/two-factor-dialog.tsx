@@ -5,8 +5,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Dispatch, SetStateAction } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { TwoFactorForm } from "./two-factor-form"
+import { getCurrentUser } from "@/utils/auth"
 
 type Props = {
   open: boolean
@@ -14,9 +15,19 @@ type Props = {
 }
 
 export const TwoFactorDialog = ({ open, setOpen }: Props) => {
+  const [isTwoFactorEnabled, setIsTwoFactorEnabled] = useState<boolean>(false)
+
+  useEffect(() => {
+    const queryTwoFactorState = async () => {
+      const user = await getCurrentUser()
+      setIsTwoFactorEnabled(user?.isTwoFactorEnabled ?? false)
+    }
+
+    queryTwoFactorState()
+  }, [open])
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      {/* <DialogTrigger asChild>{props.trigger}</DialogTrigger> */}
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="text-2xl">
@@ -29,7 +40,7 @@ export const TwoFactorDialog = ({ open, setOpen }: Props) => {
         </DialogHeader>
 
         <div className="mb-4">
-          <TwoFactorForm />
+          <TwoFactorForm isTwoFactorEnabled={isTwoFactorEnabled} />
         </div>
       </DialogContent>
     </Dialog>

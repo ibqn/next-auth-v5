@@ -87,10 +87,9 @@ model PasswordResetToken {
 
 model TwoFactorSecret {
   id     String @id @default(cuid())
-  userId String
+  userId String @unique
   secret String @unique
 
-  @@unique([userId, secret])
   @@map("twofactorsecrets")
 }
 
