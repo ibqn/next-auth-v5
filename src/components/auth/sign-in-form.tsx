@@ -25,31 +25,8 @@ import { cn } from "@/utils"
 type Props = {}
 
 export const SignInForm = (props: Props) => {
-  const searchParams = useSearchParams()
-  const urlError =
-    searchParams.get("error") === "OAuthAccountNotLinked"
-      ? "Email already in use with different provider"
-      : undefined
-
-  const form = useForm<SignInPayload>({
-    resolver: zodResolver(signInValidator),
-    defaultValues: {
-      email: "",
-      password: "",
-      code: "",
-    },
-  })
-
   const [isDisabled, setDisabled] = useState(false)
   const [response, setResponse] = useState<SignInResponse | null>(null)
-
-  const handleSubmit = form.handleSubmit(async (data) => {
-    setDisabled(true)
-    setResponse(null)
-    const response = await signIn(data)
-    setResponse(response)
-    setDisabled(false)
-  })
 
   const responseType = useMemo(
     () => (response && "type" in response ? response.type : undefined),
@@ -65,6 +42,35 @@ export const SignInForm = (props: Props) => {
     () => (response && "twoFactor" in response ? response.twoFactor : false),
     [response]
   )
+
+  const searchParams = useSearchParams()
+
+  const urlError =
+    searchParams.get("error") === "OAuthAccountNotLinked"
+      ? "Email already in use with different provider"
+      : undefined
+
+  const form = useForm<SignInPayload>({
+    resolver: zodResolver(
+      signInValidator.refine(
+        (data) => !isTwoFactor || data.code?.trim().length === 6,
+        { path: ["code"], message: "Two-factor confirmation code is required" }
+      )
+    ),
+    defaultValues: {
+      email: "",
+      password: "",
+      code: "",
+    },
+  })
+
+  const handleSubmit = form.handleSubmit(async (data) => {
+    setDisabled(true)
+    setResponse(null)
+    const response = await signIn(data)
+    setResponse(response)
+    setDisabled(false)
+  })
 
   return (
     <CardWrapper
