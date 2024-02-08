@@ -13,9 +13,8 @@ export default auth((request) => {
   const isLoggedIn = !!request.auth
   const isAdmin = request.auth?.user?.role === "ADMIN"
 
-  console.log("role", request.auth?.user.role)
-
-  console.log("route:", request.nextUrl.pathname)
+  // console.log("role", request.auth?.user.role)
+  // console.log("route:", request.nextUrl.pathname)
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix)
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
@@ -23,12 +22,12 @@ export default auth((request) => {
   const isAdminRoute = adminRoutes.includes(nextUrl.pathname)
 
   if (isApiAuthRoute) {
-    return null
+    return NextResponse.next()
   }
 
   if (isAdminRoute) {
     if (isAdmin) {
-      return null
+      return NextResponse.next()
     }
 
     return NextResponse.rewrite(new URL("/404", nextUrl))
@@ -38,14 +37,14 @@ export default auth((request) => {
     if (isLoggedIn) {
       return Response.redirect(new URL(DEFAULT_SIGN_IN_REDIRECT, nextUrl))
     }
-    return null
+    return NextResponse.next()
   }
 
   if (!isLoggedIn && !isPublicRoute) {
     return Response.redirect(new URL("/auth/sign-in", nextUrl))
   }
 
-  return null
+  return NextResponse.next()
 })
 
 // Optionally, don't invoke Middleware on some paths
