@@ -4,9 +4,10 @@ import { signInValidator, type SignInPayload } from "@/lib/validators"
 import { signIn as authSignIn } from "@/auth"
 import { DEFAULT_SIGN_IN_REDIRECT } from "@/routes"
 import { AuthError } from "next-auth"
-import { getUserByEmail } from "@/utils/prisma"
+import { getTwoFactorSecretByUserId, getUserByEmail } from "@/utils/prisma"
 import { generateVerificationToken } from "@/lib/tokens"
 import { sendVerificationEmail } from "@/lib/email"
+import { authenticator } from "otplib"
 
 export type SignInResponse =
   | {
@@ -24,7 +25,7 @@ export const signIn = async (data: SignInPayload): Promise<SignInResponse> => {
     return { message: "Sign in failed", type: "error" }
   }
 
-  const { email, password, code } = validatedFields.data
+  const { email, code } = validatedFields.data
 
   const existingUser = await getUserByEmail(email)
 
@@ -43,15 +44,38 @@ export const signIn = async (data: SignInPayload): Promise<SignInResponse> => {
   }
 
   if (existingUser.isTwoFactorEnabled) {
-    if (code === undefined) {
+    if (!code) {
       return { twoFactor: true }
+    }
+
+    const twoFactorSecret = await getTwoFactorSecretByUserId(existingUser.id)
+    const secret = twoFactorSecret?.secret
+
+    if (!secret) {
+      return {
+        message: "Two-factor validation code failed",
+        type: "error",
+        twoFactor: true,
+      }
+    }
+
+    const verified = await authenticator.verify({
+      token: code,
+      secret,
+    })
+
+    if (!verified) {
+      return {
+        message: "Two-factor validation code failed",
+        type: "error",
+        twoFactor: true,
+      }
     }
   }
 
   try {
     await authSignIn("credentials", {
-      email,
-      password,
+      ...validatedFields.data,
       redirectTo: DEFAULT_SIGN_IN_REDIRECT,
     })
   } catch (error) {
@@ -61,5 +85,6 @@ export const signIn = async (data: SignInPayload): Promise<SignInResponse> => {
 
     throw error
   }
-  return { message: "Email verification sent", type: "success" }
+
+  return { message: "Sign in succeeded", type: "success" }
 }
