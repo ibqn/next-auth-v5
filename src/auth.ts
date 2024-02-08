@@ -2,11 +2,7 @@ import NextAuth, { type DefaultSession } from "next-auth"
 import authConfig from "@/auth.config"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { prisma } from "@/lib/prisma"
-import {
-  getUserById,
-  getTwoFactorConfirmationByUserId,
-  getAccountByUserId,
-} from "@/utils/prisma"
+import { getUserById, getAccountByUserId } from "@/utils/prisma"
 import { type UserRole } from "@prisma/client"
 
 export type ExtendedUser = {
@@ -45,27 +41,31 @@ export const {
         return true
       }
 
+      if (!user?.id) {
+        return false
+      }
+
       const existingUser = await getUserById(user.id)
       if (!existingUser?.emailVerified) {
         return false
       }
-      if (existingUser.isTwoFactorEnabled) {
-        const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(
-          existingUser.id
-        )
+      // if (existingUser.isTwoFactorEnabled) {
+      //   const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(
+      //     existingUser.id
+      //   )
 
-        if (!twoFactorConfirmation) {
-          return false
-        }
+      //   if (!twoFactorConfirmation) {
+      //     return false
+      //   }
 
-        await prisma.twoFactorConfirmation.delete({
-          where: { id: twoFactorConfirmation.id },
-        })
-      }
+      //   await prisma.twoFactorConfirmation.delete({
+      //     where: { id: twoFactorConfirmation.id },
+      //   })
+      // }
       return true
     },
     async jwt({ token }) {
-      console.log("token >", { token })
+      // console.log("token >", { token })
 
       if (!token.sub) {
         return token
@@ -104,7 +104,7 @@ export const {
 
       if (session.user) {
         session.user.name = token.name
-        session.user.email = token.email
+        session.user.email = token.email as string
         session.user.isOAuth = token.isOAuth as boolean
       }
 
