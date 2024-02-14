@@ -6,7 +6,7 @@ import { notFound } from "next/navigation"
 export default async function SettingsPage() {
   const sessionUser = await getCurrentUser()
 
-  if (!sessionUser) {
+  if (!sessionUser?.id) {
     notFound()
   }
 
