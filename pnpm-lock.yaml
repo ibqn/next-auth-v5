@@ -57,8 +57,8 @@ dependencies:
     specifier: ^3.3.1
     version: 3.3.1
   lucide-react:
-    specifier: ^0.330.0
-    version: 0.330.0(react@18.2.0)
+    specifier: ^0.331.0
+    version: 0.331.0(react@18.2.0)
   next:
     specifier: 14.1.0
     version: 14.1.0(react-dom@18.2.0)(react@18.2.0)
@@ -110,8 +110,8 @@ devDependencies:
     specifier: ^2.4.6
     version: 2.4.6
   '@types/node':
-    specifier: ^20.11.17
-    version: 20.11.17
+    specifier: ^20.11.19
+    version: 20.11.19
   '@types/react':
     specifier: ^18.2.55
     version: 18.2.55
@@ -1266,7 +1266,7 @@ packages:
   /@types/bcrypt@5.0.2:
     resolution: {integrity: sha512-6atioO8Y75fNcbmj0G7UjI9lXN2pQ/IGJ2FWT4a/btd0Lk9lQalHLKhkgKVZ3r+spnmWUKfbMi1GEe9wyHQfNQ==}
     dependencies:
-      '@types/node': 20.11.17
+      '@types/node': 20.11.19
     dev: true
 
   /@types/bcryptjs@2.4.6:
@@ -1281,8 +1281,8 @@ packages:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
     dev: true
 
-  /@types/node@20.11.17:
-    resolution: {integrity: sha512-QmgQZGWu1Yw9TDyAP9ZzpFJKynYNeOvwMJmaxABfieQoVoiVOS6MN1WSpqpRcbeA5+RW82kraAVxCCJg+780Qw==}
+  /@types/node@20.11.19:
+    resolution: {integrity: sha512-7xMnVEcZFu0DikYjWOlRq7NTPETrm7teqUT2WkQjrTIkEgUyyGdWsj/Zg8bEJt5TNklzbPD1X3fqfsHw3SpapQ==}
     dependencies:
       undici-types: 5.26.5
     dev: true
@@ -2970,8 +2970,8 @@ packages:
     dependencies:
       yallist: 4.0.0
 
-  /lucide-react@0.330.0(react@18.2.0):
-    resolution: {integrity: sha512-CQwY+Fpbt2kxCoVhuN0RCZDCYlbYnqB870Bl/vIQf3ER/cnDDQ6moLmEkguRyruAUGd4j3Lc4mtnJosXnqHheA==}
+  /lucide-react@0.331.0(react@18.2.0):
+    resolution: {integrity: sha512-CHFJ0ve9vaZ7bB2VRAl27SlX1ELh6pfNC0jS96qGpPEEzLkLDGq4pDBFU8RhOoRMqsjXqTzLm9U6bZ1OcIHq7Q==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0
     dependencies:
