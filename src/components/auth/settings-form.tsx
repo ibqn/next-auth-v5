@@ -124,24 +124,24 @@ export const SettingsForm = ({ user }: Props) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Role</FormLabel>
-                      <FormControl>
-                        <Select
-                          disabled={isDisabled}
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
+
+                      <Select
+                        disabled={isDisabled}
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select a role" />
                           </SelectTrigger>
+                        </FormControl>
 
-                          <SelectContent>
-                            <SelectItem value={UserRole.ADMIN}>
-                              Admin
-                            </SelectItem>
-                            <SelectItem value={UserRole.USER}>User</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
+                        <SelectContent>
+                          <SelectItem value={UserRole.ADMIN}>Admin</SelectItem>
+                          <SelectItem value={UserRole.USER}>User</SelectItem>
+                        </SelectContent>
+                      </Select>
+
                       <FormMessage />
                     </FormItem>
                   )}
