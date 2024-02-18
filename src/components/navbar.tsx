@@ -6,12 +6,13 @@ import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { UserButton } from "@/components/auth"
 import { UserRole } from "@prisma/client"
+import { type ExtendedUser } from "@/auth"
 
 type Props = {
-  role?: UserRole
+  user?: ExtendedUser
 }
 
-export const Navbar = ({ role }: Props) => {
+export const Navbar = ({ user }: Props) => {
   const navLinks = useMemo(
     () =>
       [
@@ -19,8 +20,10 @@ export const Navbar = ({ role }: Props) => {
         { path: "/server", name: "Server" },
         { path: "/admin", name: "Admin", protectedNav: true },
         { path: "/settings", name: "Settings" },
-      ].filter(({ protectedNav }) => !protectedNav || role === UserRole.ADMIN),
-    [role]
+      ].filter(
+        ({ protectedNav }) => !protectedNav || user?.role === UserRole.ADMIN
+      ),
+    [user?.role]
   )
 
   const pathname = usePathname()
@@ -40,7 +43,7 @@ export const Navbar = ({ role }: Props) => {
         ))}
       </div>
 
-      <UserButton />
+      <UserButton user={user} />
     </nav>
   )
 }

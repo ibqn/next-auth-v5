@@ -4,24 +4,29 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { FaUser } from "react-icons/fa"
 import { ExitIcon } from "@radix-ui/react-icons"
 import { signOut } from "@/actions"
+import { type ExtendedUser } from "@/auth"
 
-type Props = {}
+type Props = {
+  user?: ExtendedUser
+}
 
-export const UserButton = (props: Props) => {
+export const UserButton = ({ user }: Props) => {
   const handleSignOut = () => {
     signOut()
   }
+
+  console.log("image", user?.image)
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar>
-          {/* <AvatarImage src={user?.image || ""} /> */}
-          <AvatarFallback className="from-indigo-6 to-cyan-3 bg-gradient-120">
+          <AvatarImage src={user?.image ?? undefined} />
+          <AvatarFallback className="bg-gradient-120 from-indigo-6 to-cyan-3">
             <FaUser className="text-white" />
           </AvatarFallback>
         </Avatar>

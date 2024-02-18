@@ -8,6 +8,7 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Next Auth",
   description: "Next auth app",
+  referrer: "no-referrer", // add meta tag with referrer to fix blocked profile images from google
 }
 
 type Props = {
