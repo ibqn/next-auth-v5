@@ -6,6 +6,7 @@ import {
   authRoutes,
   publicRoutes,
 } from "@/routes"
+import { Middleware } from "next/dist/lib/load-custom-routes"
 import { NextResponse } from "next/server"
 
 export default auth((request) => {
@@ -16,18 +17,26 @@ export default auth((request) => {
   // console.log("role", request.auth?.user.role)
   // console.log("route:", request.nextUrl.pathname)
 
+  const requestHeaders = new Headers(request.headers)
+  // New request headers
+  requestHeaders.set("x-origin", request.nextUrl.origin)
+
+  const response = NextResponse.next({
+    request: { headers: requestHeaders },
+  })
+
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix)
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
   const isAuthRoute = authRoutes.includes(nextUrl.pathname)
   const isAdminRoute = adminRoutes.includes(nextUrl.pathname)
 
   if (isApiAuthRoute) {
-    return NextResponse.next()
+    return response
   }
 
   if (isAdminRoute) {
     if (isAdmin) {
-      return NextResponse.next()
+      return response
     }
 
     return NextResponse.rewrite(new URL("/404", nextUrl))
@@ -37,14 +46,14 @@ export default auth((request) => {
     if (isLoggedIn) {
       return Response.redirect(new URL(DEFAULT_SIGN_IN_REDIRECT, nextUrl))
     }
-    return NextResponse.next()
+    return response
   }
 
   if (!isLoggedIn && !isPublicRoute) {
     return Response.redirect(new URL("/auth/sign-in", nextUrl))
   }
 
-  return NextResponse.next()
+  return response
 })
 
 // Optionally, don't invoke Middleware on some paths

@@ -1,9 +1,13 @@
 import NextAuth, { type DefaultSession } from "next-auth"
-import authConfig from "@/auth.config"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { prisma } from "@/lib/prisma"
 import { getUserById, getAccountByUserId } from "@/utils/prisma"
 import { type UserRole } from "@prisma/client"
+import GitHub from "next-auth/providers/github"
+import Google from "next-auth/providers/google"
+import Credentials from "next-auth/providers/credentials"
+import { env } from "@/lib/env"
+import { authorizeUser } from "@/actions/authorize-user"
 
 export type ExtendedUser = {
   role: UserRole
@@ -113,5 +117,23 @@ export const {
   },
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
-  ...authConfig,
+  providers: [
+    GitHub({
+      clientId: env.GITHUB_ID,
+      clientSecret: env.GITHUB_SECRET,
+      // allowDangerousEmailAccountLinking: true,
+    }),
+    Google({
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+      // allowDangerousEmailAccountLinking: true,
+    }),
+    Credentials({
+      async authorize(credentials) {
+        const user = await authorizeUser(credentials)
+        console.log("user", user)
+        return user
+      },
+    }),
+  ],
 })
