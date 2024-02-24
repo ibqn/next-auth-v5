@@ -6,16 +6,12 @@ import {
   authRoutes,
   publicRoutes,
 } from "@/routes"
-import { Middleware } from "next/dist/lib/load-custom-routes"
 import { NextResponse } from "next/server"
 
 export default auth((request) => {
   const { nextUrl } = request
   const isLoggedIn = !!request.auth
   const isAdmin = request.auth?.user?.role === "ADMIN"
-
-  // console.log("role", request.auth?.user.role)
-  // console.log("route:", request.nextUrl.pathname)
 
   const requestHeaders = new Headers(request.headers)
   // New request headers
