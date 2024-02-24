@@ -53,19 +53,7 @@ export const {
       if (!existingUser?.emailVerified) {
         return false
       }
-      // if (existingUser.isTwoFactorEnabled) {
-      //   const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(
-      //     existingUser.id
-      //   )
 
-      //   if (!twoFactorConfirmation) {
-      //     return false
-      //   }
-
-      //   await prisma.twoFactorConfirmation.delete({
-      //     where: { id: twoFactorConfirmation.id },
-      //   })
-      // }
       return true
     },
     async jwt({ token }) {
@@ -131,7 +119,6 @@ export const {
     Credentials({
       async authorize(credentials) {
         const user = await authorizeUser(credentials)
-        console.log("user", user)
         return user
       },
     }),
