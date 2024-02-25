@@ -3,7 +3,7 @@ export { SignUpForm } from "./sign-up-form"
 
 export { ErrorCard } from "./error-card"
 
-export { EmailVerificationForm } from "./email-verification-from"
+export { EmailVerificationForm } from "./email-verification-form"
 export { PasswordResetForm } from "./password-reset-form"
 export { NewPasswordForm } from "./new-password-form"
 
