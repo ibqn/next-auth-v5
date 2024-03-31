@@ -1,5 +1,10 @@
 import { EmailVerificationForm } from "@/components/auth"
+import { Suspense } from "react"
 
 export default function SignUpPage() {
-  return <EmailVerificationForm />
+  return (
+    <Suspense>
+      <EmailVerificationForm />
+    </Suspense>
+  )
 }
